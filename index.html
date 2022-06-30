@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Easy DH</title>
+    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: sans-serif;
+                align-content: center;
+            }
+            h1 {
+                text-align: center;
+                font-size: xx-large;
+                text-align: center;
+            }
+            blockquote {
+                text-align: center;
+            }
+            input {
+                width: 100%;
+                font-size: x-large;
+            }
+            .closebut {
+                float: right;
+                font-size: large;
+            }
+            #headtitle {
+                display: block;
+                border: 1px solid gray;
+            }
+            .close {
+                color: #aaa;
+                float: right;
+                font-size: 28px;
+                font-weight: bold;
+              }
+              
+            .close:hover,
+            .close:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
+            .modal {
+                display: none; /* Hidden by default */
+                position: fixed; /* Stay in place */
+                z-index: 1; /* Sit on top */
+                left: 0;
+                top: 0;
+                width: 100%; /* Full width */
+                height: 100%; /* Full height */
+                overflow: auto; /* Enable scroll if needed */
+                background-color: rgb(0,0,0); /* Fallback color */
+                background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            }
+              
+              /* Modal Content/Box */
+            .modal-content {
+                background-color: #fefefe;
+                margin: 15% auto; /* 15% from the top and centered */
+                padding: 20px;
+                border: 1px solid #888;
+                width: 80%; /* Could be more or less, depending on screen size */
+            }
+              
+        </style>
+        <script type="text/javascript">
+            var primes = [3, 2, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73,
+            79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163,
+            167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251,
+            257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349,
+            353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443,
+            449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557,
+            563, 569, 571, 577, 587, 593, 599, 601, 607, 613, 617, 619, 631, 641, 643, 647,
+            653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 727, 733, 739, 743, 751, 757,
+            761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 859, 863,
+            877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983,
+            991, 997]
+            var prime;
+            var modulo;
+
+            function toggleTitle(){
+                if(document.getElementById("headtitle").style.display == "none"){
+                    document.getElementById("headtitle").style.display = "block";
+                }else{
+                    document.getElementById("headtitle").style.display = "none";
+                }
+            }
+
+            function getRandCode(){
+                var item = new Uint32Array(1);
+                window.crypto.getRandomValues(item);
+                return item[0];
+            }
+
+            function setBaseVals(){
+                prime = document.getElementById("prime").value;
+                modulo = document.getElementById("modulo").value;
+                document.getElementById("basesetbut").value = "Base Key Settings: " + prime + ", " + modulo;
+                document.getElementById("settingmodal").style.display = "none";
+            }
+
+            function load(){ 
+                var settingmodal = document.getElementById("settingmodal");
+                var setclose = document.getElementById("setclose");
+                setclose.onclick = function() {
+                    settingmodal.style.display = "none";
+                }
+
+                window.onclick = function(event) {
+                    if (event.target == settingmodal) {
+                        settingmodal.style.display = "none";
+                    }
+                }
+                setBaseVals();
+            }
+
+            function showBaseSettings(){
+                document.getElementById("settingmodal").style.display = "block";
+            }
+        </script>
+    </head>
+    <body>
+        <div id="headtitle">
+            <h1>Easy DH</h1>
+            <blockquote>Encryption system based on a Diffie-Hellman key exchange. Brought to you by the makers of Cryptify.</blockquote>
+        </div>
+        <div class="modal" id="settingmodal">
+            <div class="modal-content">
+                <span id="setclose" class="close">&times;</span>
+                <h1>Base Key Settings:</h1>
+                <form>
+                    <label for="prime">Prime(1-167):</label>
+                    <input type="number" id="prime" name="prime" min="1" max="167" value="8">
+                    <label for="modulo">Modulo(8-1024):</label>
+                    <input type="number" id="modulo" name="modulo" min="8" max="1024" value="512">
+                    <input type="reset" value="Reset to default values">
+                    <input type="button" onclick="setBaseVals()" value="Set Values">
+                </form>
+            </div>
+        </div>
+        <div id="infomodal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="infoclose">&times;</span>
+                <h1 id="infotitle">Info:</h1>
+                <blockquote id="infobody">Some info here...</blockquote>
+                <input type="checkbox" value="">
+            </div>
+        </div>
+        <button class="closebut" onclick="toggleTitle()">Toggle Title</button><br>
+        <input id="basesetbut" type="button" onclick="showBaseSettings()" value="Base Key Settings: 0, 0" style="height: 0.5in;">
+        <br>
+        <br>
+        <label for="prikey">Private Key Code:</label>
+        <br>
+        <input type="number" id="prikey" name="prikey" min="1" max="1000000000000">
+        <br>
+        <br>
+        <label for="pubkey">Public Key Code:</label>
+        <br>
+        <input type="number" id="pubkey" name="pubkey" min="1" max="1000000000000">
+        <script>load();</script>
+    </body>
+</html>
