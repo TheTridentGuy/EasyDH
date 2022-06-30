@@ -112,12 +112,25 @@
                         settingmodal.style.display = "none";
                     }
                 }
+
+                var infomodal = document.getElementById("infomodal");
+                var infoclose = document.getElementById("infoclose");
+                infoclose.onclick = function() {
+                    infomodal.style.display = "none";
+                }
+                window.onclick = function(event) {
+                    if (event.target == infomodal) {
+                        infomodal.style.display = "none";
+                    }
+                }
                 setBaseVals();
             }
 
             function showBaseSettings(){
                 document.getElementById("settingmodal").style.display = "block";
             }
+
+            function 
         </script>
     </head>
     <body>
@@ -144,7 +157,7 @@
                 <span class="close" id="infoclose">&times;</span>
                 <h1 id="infotitle">Info:</h1>
                 <blockquote id="infobody">Some info here...</blockquote>
-                <input type="checkbox" value="">
+                <input type="checkbox" value="Add to notes?">
             </div>
         </div>
         <button class="closebut" onclick="toggleTitle()">Toggle Title</button><br>
