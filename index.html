@@ -16,6 +16,11 @@
             blockquote {
                 text-align: center;
             }
+            .keybutton {
+                height: .5;
+                font-size: xx-large;
+                width: 100%;
+            }
             input {
                 width: 100%;
                 font-size: x-large;
@@ -33,8 +38,7 @@
                 float: right;
                 font-size: 28px;
                 font-weight: bold;
-              }
-              
+            }  
             .close:hover,
             .close:focus {
                 color: black;
@@ -90,12 +94,12 @@
             function getRandCode(){
                 var item = new Uint32Array(1);
                 window.crypto.getRandomValues(item);
-                return item[0].toString().substring((item[0].toString().length) - 3)
+                return BigInt(item[0].toString().substring((item[0].toString().length) - 6));
             }
 
             function setBaseVals(){
-                prime = document.getElementById("prime").value;
-                modulo = document.getElementById("modulo").value;
+                prime = BigInt(document.getElementById("prime").value);
+                modulo = BigInt(document.getElementById("modulo").value);
                 document.getElementById("basesetbut").value = "Base Key Settings: " + prime + "n, " + modulo;
                 document.getElementById("settingmodal").style.display = "none";
             }
@@ -135,6 +139,28 @@
                 document.getElementById("infobody").innerHTML = info;
                 document.getElementById("infomodal").style.display = "block";
             }
+
+            function showPrivate(){
+                showInfo("Your Private Key:", getRandCode());
+            }
+
+            function showPublic(){
+                if(document.getElementById("prikey").value != 0){
+                    showInfo("Your Public Key:", (primes[prime]**BigInt(document.getElementById("prikey").value)) % modulo)
+                }else{
+                    showInfo("Oops...", "Make sure you inputed a private key.")
+                }
+            }
+
+            function copy(text) {
+                var input = document.createElement('textarea');
+                input.innerHTML = text;
+                document.body.appendChild(input);
+                input.select();
+                var result = document.execCommand('copy');
+                document.body.removeChild(input);
+                return result;
+            }
         </script>
     </head>
     <body>
@@ -147,10 +173,10 @@
                 <span id="setclose" class="close">&times;</span>
                 <h1>Base Key Settings:</h1>
                 <form>
-                    <label for="prime">Prime(1-167):</label>
-                    <input type="number" id="prime" name="prime" min="1" max="167" value="8">
-                    <label for="modulo">Modulo(8-1024):</label>
-                    <input type="number" id="modulo" name="modulo" min="8" max="1024" value="512">
+                    <label for="prime">Prime(0-167):</label>
+                    <input type="number" id="prime" name="prime" min="0" max="167" value="8">
+                    <label for="modulo">Modulo(10-10000):</label>
+                    <input type="number" id="modulo" name="modulo" min="10" max="10000" value="512">
                     <input type="reset" value="Reset to default values">
                     <input type="button" onclick="setBaseVals()" value="Set Values">
                 </form>
@@ -161,6 +187,7 @@
                 <span class="close" id="infoclose">&times;</span>
                 <h1 id="infotitle">Info:</h1>
                 <blockquote id="infobody">Some info here...</blockquote>
+                <button onclick="copy(document.getElementById('infobody').innerHTML)">Copy to clipboard</button><br>
                 <label for="log">Add to notes?</label>
                 <input type="checkbox" id="log" name="log">
             </div>
@@ -171,12 +198,16 @@
         <br>
         <label for="prikey">Private Key Code:</label>
         <br>
-        <input type="number" id="prikey" name="prikey" min="1" max="1000000000000">
+        <input type="number" id="prikey" name="prikey" min="0" max="1000000000000">
         <br>
         <br>
         <label for="pubkey">Public Key Code:</label>
         <br>
-        <input type="number" id="pubkey" name="pubkey" min="1" max="1000000000000">
+        <input type="number" id="pubkey" name="pubkey" min="0" max="1000000000000">
+        <br>
+        <br>
+        <button class="keybutton" onclick="showPrivate()">Generate Private Key</button>
+        <button class="keybutton" onclick="showPublic()">Generate Public Key</button>
         <script>
             load();
         </script>
