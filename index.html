@@ -66,8 +66,13 @@
                 border: 1px solid #888;
                 width: 80%; /* Could be more or less, depending on screen size */
             }
+            textarea {
+                width: 100%;
+                height: 1in;
+            }
               
         </style>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
         <script type="text/javascript">
             var primes = [3n, 2n, 5n, 7n, 11n, 13n, 17n, 19n, 23n, 29n, 31n, 37n, 41n, 43n, 47n, 53n, 59n, 61n, 67n, 71n, 73n,
             79n, 83n, 89n, 97n, 101n, 103n, 107n, 109n, 113n, 127n, 131n, 137n, 139n, 149n, 151n, 157n, 163n,
@@ -80,7 +85,7 @@
             761n, 769n, 773n, 787n, 797n, 809n, 811n, 821n, 823n, 827n, 829n, 839n, 853n, 857n, 859n, 863n,
             877n, 881n, 883n, 887n, 907n, 911n, 919n, 929n, 937n, 941n, 947n, 953n, 967n, 971n, 977n, 983n,
             991n, 997n]
-            var prime = 0n;
+            var prime = 0;
             var modulo = 0n;
 
             function toggleTitle(){
@@ -127,6 +132,16 @@
                         infomodal.style.display = "none";
                     }
                 }
+                var emodal = document.getElementById("encryptmodal");
+                var eclose = document.getElementById("encryptclose");
+                eclose.onclick = function() {
+                    emodal.style.display = "none";
+                }
+                window.onclick = function(event) {
+                    if (event.target == emodal) {
+                        emodal.style.display = "none";
+                    }
+                }
                 setBaseVals();
             }
 
@@ -161,6 +176,43 @@
                 document.body.removeChild(input);
                 return result;
             }
+
+            function encrypt(){
+                if(confirm()){
+                    text = document.getElementById("in").innerText;
+                    document.getElementById("out").innerText = encryptWithAES(text, getcode())
+                }
+            }
+
+            function decrypt(){
+                if(confirm()){
+                    text = document.getElementById("in").innerText;
+                    document.getElementById("out").innerText = decryptWithAES(text, getcode())
+                }
+            }
+
+            function confirm(){
+                if(document.getElementById("pubkey").value != 0 && document.getElementById("prikey").value != 0){
+                    return true;
+                }else{
+                    showInfo("Oops...", "Make sure you inputted a private and public key.");
+                    return false;
+                }
+            }
+
+            function getcode(){
+                return ((document.getElementById("pubkey").value**document.getElementById("prikey").value) % modulo).toString;
+            }
+
+            const encryptWithAES = (text, passphrase) => {
+                return CryptoJS.AES.encrypt(text, passphrase).toString();
+            };
+
+            const decryptWithAES = (ciphertext, passphrase) => {
+                const bytes = CryptoJS.AES.decrypt(ciphertext, passphrase);
+                const originalText = bytes.toString(CryptoJS.enc.Utf8);
+                return originalText;
+            };  
         </script>
     </head>
     <body>
@@ -192,6 +244,16 @@
                 <input type="checkbox" id="log" name="log">
             </div>
         </div>
+        <div id="encryptmodal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="encryptclose">&times;</span>
+                <h1 class="title">Encrypt/Decrypt:</h1>
+                <textarea placeholder="Input..." id="in"></textarea>
+                <textarea placeholder="Output..." id="out"></textarea>
+                <button style="width: 25%; height: .4in; font-size: x-large;" onclick="encrypt()">Encrypt</button>
+                <button style="width: 25%; height: .4in; font-size: x-large;" onclick="decrypt()">Decrypt</button>
+            </div>
+        </div>
         <button class="closebut" onclick="toggleTitle()">Toggle Title</button><br>
         <input id="basesetbut" type="button" onclick="showBaseSettings()" value="Base Key Settings: 0, 0" style="height: 0.5in;">
         <br>
@@ -208,6 +270,7 @@
         <br>
         <button class="keybutton" onclick="showPrivate()">Generate Private Key</button>
         <button class="keybutton" onclick="showPublic()">Generate Public Key</button>
+        <button class="keybutton" onclick="">Encrypt/Decrypt</button>
         <script>
             load();
         </script>
