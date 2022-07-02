@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Easy DH</title>
+    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: sans-serif;
+                align-content: center;
+            }
+            h1 {
+                text-align: center;
+                font-size: xx-large;
+                text-align: center;
+            }
+            blockquote {
+                text-align: center;
+            }
+            .keybutton {
+                height: .5;
+                font-size: xx-large;
+                width: 100%;
+            }
+            input {
+                width: 100%;
+                font-size: x-large;
+            }
+            .closebut {
+                float: right;
+                font-size: large;
+            }
+            #headtitle {
+                display: block;
+                border: 1px solid gray;
+            }
+            .close {
+                color: #aaa;
+                float: right;
+                font-size: 28px;
+                font-weight: bold;
+            }  
+            .close:hover,
+            .close:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
+            .modal {
+                display: none; /* Hidden by default */
+                position: fixed; /* Stay in place */
+                z-index: 1; /* Sit on top */
+                left: 0;
+                top: 0;
+                width: 100%; /* Full width */
+                height: 100%; /* Full height */
+                overflow: auto; /* Enable scroll if needed */
+                background-color: rgb(0,0,0); /* Fallback color */
+                background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            }
+              
+              /* Modal Content/Box */
+            .modal-content {
+                background-color: #fefefe;
+                margin: 15% auto; /* 15% from the top and centered */
+                padding: 20px;
+                border: 1px solid #888;
+                width: 80%; /* Could be more or less, depending on screen size */
+            }
+            textarea {
+                width: 100%;
+                height: 1in;
+            }
+              
+        </style>
+        <script src="CryptoJS/rollups/aes.js"></script>
+        <script type="text/javascript">
+            var primes = [3n, 2n, 5n, 7n, 11n, 13n, 17n, 19n, 23n, 29n, 31n, 37n, 41n, 43n, 47n, 53n, 59n, 61n, 67n, 71n, 73n,
+            79n, 83n, 89n, 97n, 101n, 103n, 107n, 109n, 113n, 127n, 131n, 137n, 139n, 149n, 151n, 157n, 163n,
+            167n, 173n, 179n, 181n, 191n, 193n, 197n, 199n, 211n, 223n, 227n, 229n, 233n, 239n, 241n, 251n,
+            257n, 263n, 269n, 271n, 277n, 281n, 283n, 293n, 307n, 311n, 313n, 317n, 331n, 337n, 347n, 349n,
+            353n, 359n, 367n, 373n, 379n, 383n, 389n, 397n, 401n, 409n, 419n, 421n, 431n, 433n, 439n, 443n,
+            449n, 457n, 461n, 463n, 467n, 479n, 487n, 491n, 499n, 503n, 509n, 521n, 523n, 541n, 547n, 557n,
+            563n, 569n, 571n, 577n, 587n, 593n, 599n, 601n, 607n, 613n, 617n, 619n, 631n, 641n, 643n, 647n,
+            653n, 659n, 661n, 673n, 677n, 683n, 691n, 701n, 709n, 719n, 727n, 733n, 739n, 743n, 751n, 757n,
+            761n, 769n, 773n, 787n, 797n, 809n, 811n, 821n, 823n, 827n, 829n, 839n, 853n, 857n, 859n, 863n,
+            877n, 881n, 883n, 887n, 907n, 911n, 919n, 929n, 937n, 941n, 947n, 953n, 967n, 971n, 977n, 983n,
+            991n, 997n]
+            var prime = 0;
+            var modulo = 0n;
+            var notestring = "";
+
+            function toggleTitle(){
+                if(document.getElementById("headtitle").style.display == "none"){
+                    document.getElementById("headtitle").style.display = "block";
+                }else{
+                    document.getElementById("headtitle").style.display = "none";
+                }
+            }
+
+            function getRandCode(){
+                var item = new Uint32Array(1);
+                window.crypto.getRandomValues(item);
+                return BigInt(item[0].toString().substring((item[0].toString().length) - 5) + 1);
+            }
+
+            function setBaseVals(){
+                prime = BigInt(document.getElementById("prime").value);
+                modulo = BigInt(document.getElementById("modulo").value);
+                document.getElementById("basesetbut").value = "Base Key Settings: " + prime + "n, " + modulo;
+                document.getElementById("settingmodal").style.display = "none";
+            }
+
+            function load(){ 
+                var settingmodal = document.getElementById("settingmodal");
+                var setclose = document.getElementById("setclose");
+                setclose.onclick = function() {
+                    settingmodal.style.display = "none";
+                }
+
+                window.onclick = function(event) {
+                    if (event.target == settingmodal) {
+                        settingmodal.style.display = "none";
+                    }
+                }
+
+                var infomodal = document.getElementById("infomodal");
+                var infoclose = document.getElementById("infoclose");
+                infoclose.onclick = function() {
+                    infomodal.style.display = "none";
+                }
+                window.onclick = function(event) {
+                    if (event.target == infomodal) {
+                        infomodal.style.display = "none";
+                    }
+                }
+                var emodal = document.getElementById("encryptmodal");
+                var eclose = document.getElementById("encryptclose");
+                eclose.onclick = function() {
+                    emodal.style.display = "none";
+                }
+                window.onclick = function(event) {
+                    if (event.target == emodal) {
+                        emodal.style.display = "none";
+                    }
+                }
+                setBaseVals();
+            }
+
+            function showBaseSettings(){
+                document.getElementById("settingmodal").style.display = "block";
+            }
+
+            function showInfo(title, info){
+                document.getElementById("infotitle").innerHTML = title;
+                document.getElementById("infobody").innerHTML = info;
+                document.getElementById("infomodal").style.display = "block";
+            }
+
+            function showPrivate(){
+                const key = getRandCode();
+                showInfo("Your Private Key:", key);
+                notestring = "Your Private Key: " + key + "\n";
+
+            }
+
+            function showPublic(){
+                if(document.getElementById("prikey").value != 0){
+                    const public = (primes[prime]**BigInt(document.getElementById("prikey").value)) % modulo;
+                    showInfo("Your Public Key:", public);
+                    notestring = "Your Public Key: " + public + "\n";
+                }else{
+                    showInfo("Oops...", "Make sure you inputed a private key.")
+                    notestring = "Make sure you inputed a private key.\n";
+                }
+            }
+
+            function copy(text) {
+                var input = document.createElement('textarea');
+                input.innerHTML = text;
+                document.body.appendChild(input);
+                input.select();
+                var result = document.execCommand('copy');
+                document.body.removeChild(input);
+                document.getElementById("infomodal").style.display = "none";
+            }
+
+            function encrypt(){
+                if(confirm()){
+                    text = document.getElementById("in").value;
+                    document.getElementById("out").value = encryptWithAES(text, getcode());
+                }
+            }
+
+            function decrypt(){
+                if(confirm()){
+                    text = document.getElementById("in").value;
+                    document.getElementById("out").value = decryptWithAES(text, getcode());
+                }
+            }
+
+            function confirm(){
+                if(document.getElementById("pubkey").value != 0 && document.getElementById("prikey").value != 0){
+                    return true;
+                }else{
+                    showInfo("Oops...", "Make sure you inputted a private and public key.");
+                    return false;
+                }
+            }
+
+            function getcode(){
+                return (document.getElementById("pubkey").value**document.getElementById("prikey").value).toString();
+            }
+
+            function showED(){
+                document.getElementById("encryptmodal").style.display = "block";
+            }
+
+            function addNote(){
+                document.getElementById("notes").value += notestring;
+                document.getElementById("infomodal").style.display = "none";
+            }
+
+            const encryptWithAES = (text, passphrase) => {
+                return CryptoJS.AES.encrypt(text, passphrase).toString();
+            };
+
+            const decryptWithAES = (ciphertext, passphrase) => {
+                const bytes = CryptoJS.AES.decrypt(ciphertext, passphrase);
+                const originalText = bytes.toString(CryptoJS.enc.Utf8);
+                return originalText;
+            };  
+        </script>
+    </head>
+    <body>
+        <div id="headtitle">
+            <h1>Easy DH</h1>
+            <blockquote>Encryption system based on a Diffie-Hellman key exchange. Brought to you by the makers of Cryptify.</blockquote>
+        </div>
+        <div class="modal" id="settingmodal">
+            <div class="modal-content">
+                <span id="setclose" class="close">&times;</span>
+                <h1>Base Key Settings:</h1>
+                <form>
+                    <label for="prime">Prime(0-167):</label>
+                    <input type="number" id="prime" name="prime" min="0" max="167" value="8">
+                    <label for="modulo">Modulo(10-10000):</label>
+                    <input type="number" id="modulo" name="modulo" min="10" max="10000" value="512">
+                    <input type="reset" value="Reset to default values">
+                    <input type="button" onclick="setBaseVals()" value="Set Values">
+                </form>
+            </div>
+        </div>
+        <div id="infomodal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="infoclose">&times;</span>
+                <h1 id="infotitle">Info:</h1>
+                <blockquote id="infobody">Some info here...</blockquote>
+                <button onclick="copy(document.getElementById('infobody').innerHTML)">Copy to clipboard</button>
+                <button onclick="addNote()">Add to notes</button>
+            </div>
+        </div>
+        <div id="encryptmodal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="encryptclose">&times;</span>
+                <h1 class="title">Encrypt/Decrypt:</h1>
+                <textarea placeholder="Input..." id="in"></textarea>
+                <textarea placeholder="Output..." id="out"></textarea>
+                <button style="width: 25%; height: .4in; font-size: x-large;" onclick="encrypt()">Encrypt</button>
+                <button style="width: 25%; height: .4in; font-size: x-large;" onclick="decrypt()">Decrypt</button>
+            </div>
+        </div>
+        <button class="closebut" onclick="toggleTitle()">Toggle Title</button><br>
+        <input id="basesetbut" type="button" onclick="showBaseSettings()" value="Base Key Settings: 0, 0" style="height: 0.5in;">
+        <br>
+        <br>
+        <label for="prikey">Private Key Code:</label>
+        <br>
+        <input type="number" id="prikey" name="prikey" min="0" max="1000000000000">
+        <br>
+        <br>
+        <label for="pubkey">Public Key Code:</label>
+        <br>
+        <input type="number" id="pubkey" name="pubkey" min="0" max="1000000000000">
+        <br>
+        <br>
+        <button class="keybutton" onclick="showPrivate()">Generate Private Key</button>
+        <button class="keybutton" onclick="showPublic()">Generate Public Key</button>
+        <button class="keybutton" onclick="showED()">Encrypt/Decrypt</button>
+        <br>
+        <h2>Notes:</h2>
+        <textarea id="notes" placeholder="Notes..."></textarea>
+        <script>
+            load();
+        </script>
+    </body>
+</html>
