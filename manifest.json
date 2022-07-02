@@ -3,14 +3,14 @@
     "short_name": "Easy DH",
     "theme_color": "#ffffff",
     "background_color": "#ffffff",
-    "display": "minimal-ui",
+    "display": "standalone",
     "orientation": "portrait",
     "scope": "/",
     "start_url": "/",
     "icons": [
         {
-            "src": ["ezdh192.png", "ezdh180.png"],
-            "sizes": ["192x192", "180x180"]
+            "src": "ezdh192.png",
+            "sizes": "192x192"
         }
     ]
 }
