@@ -292,14 +292,16 @@
         <button class="keybutton" onclick="showED()">Encrypt/Decrypt</button>
         <br>
         <h2>Notes:</h2>
-        <textarea id="notes" placeholder="Notes..."></textarea>
+        <textarea id="notes" placeholder="Notes..."></textarea>  
         <script>
+            load();
+        </script>
+        <script> 
             if (!navigator.serviceWorker.controller) {
                 navigator.serviceWorker.register("sw.js").then(function(reg) {
                 console.log("Service worker has been registered for scope: " + reg.scope);
                 });
             }
-            load();
         </script>
     </body>
 </html>
