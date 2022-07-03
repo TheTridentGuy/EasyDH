@@ -6,8 +6,8 @@
     "background_color": "#ffffff",
     "display": "fullscreen",
     "orientation": "portrait",
-    "scope": "/EasyDH/",
-    "start_url": "/EasyDH/",
+    "scope": ".",
+    "start_url": "/",
     "icons": [
         {
             "src": "ezdh192.png",
