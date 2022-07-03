@@ -6,7 +6,12 @@
         <link rel="manifest" href="manifest.json">
         <link rel="shortcut icon" href="favicon.ico">
         <link rel="icon" type="image/png" href="ezdh192.png" sizes="192x192">
-        <link rel="apple-touch-icon" sizes="180x180" href="ezdh180.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="ezdh180.png"> 
+        <script>      
+        if (navigator.serviceWorker) {
+            navigator.serviceWorker.register('/EasyDH/sw.js', {scope: '/EasyDH/'})
+        }
+        </script>
         <style>
             body {
                 font-family: sans-serif;
@@ -292,16 +297,9 @@
         <button class="keybutton" onclick="showED()">Encrypt/Decrypt</button>
         <br>
         <h2>Notes:</h2>
-        <textarea id="notes" placeholder="Notes..."></textarea>
+        <textarea id="notes" placeholder="Notes..."></textarea>  
         <script>
             load();
-        </script>
-        <script> 
-            if (!navigator.serviceWorker.controller) {
-                navigator.serviceWorker.register("sw.js").then(function(reg) {
-                console.log("Service worker has been registered for scope: " + reg.scope);
-                });
-            }
         </script>
     </body>
 </html>
