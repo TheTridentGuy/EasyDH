@@ -8,8 +8,10 @@
         <link rel="icon" type="image/png" href="ezdh192.png" sizes="192x192">
         <link rel="apple-touch-icon" sizes="180x180" href="ezdh180.png"> 
         <script>      
-        if (navigator.serviceWorker) {
-            navigator.serviceWorker.register('./sw.js', {scope: '/EasyDH/'})
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+            navigator.serviceWorker.register('/sw.js');
+            });
         }
         </script>
         <style>
