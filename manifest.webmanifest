@@ -2,14 +2,14 @@
     "name": "EasyDH",
     "short_name": "EZ-DH",
     "description": "Powerfull encryption app.",
-    "scope": "/EasyDH/",
-    "start_url": "/EasyDH/",
+    "scope": "/",
+    "start_url": "/",
     "background_color": "#ffffff",
     "theme_color": "#ffffff",
     "display": "standalone", 
     "icons": [
         {
-          "src": "/EasyDH/ezdh192.png",
+          "src": "/ezdh192.png",
           "type": "image/png",
           "sizes": "192x192"
         }
