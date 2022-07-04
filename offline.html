@@ -8,8 +8,10 @@
         <link rel="icon" type="image/png" href="ezdh192.png" sizes="192x192">
         <link rel="apple-touch-icon" sizes="180x180" href="ezdh180.png"> 
         <script>      
-        if (navigator.serviceWorker) {
-            navigator.serviceWorker.register('/EasyDH/sw.js', {scope: '/EasyDH/'})
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+            navigator.serviceWorker.register('/sw.js');
+            });
         }
         </script>
         <style>
@@ -109,7 +111,7 @@
             function getRandCode(){
                 var item = new Uint32Array(1);
                 window.crypto.getRandomValues(item);
-                return BigInt(item[0].toString().substring((item[0].toString().length) - 5) + 1);
+                return BigInt(item[0].toString().substring((item[0].toString().length) - 5) / 1 + 1);
             }
 
             function setBaseVals(){
@@ -221,7 +223,9 @@
             }
 
             function showED(){
-                document.getElementById("encryptmodal").style.display = "block";
+                if(confirm()){
+                    document.getElementById("encryptmodal").style.display = "block";
+                }
             }
 
             function addNote(){

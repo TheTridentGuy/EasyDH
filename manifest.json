@@ -1,23 +1,17 @@
 {
-    "name": "Easy DH",
-    "short_name": "Easy DH",
-    "description": "Powerful encryption app.",
-    "theme_color": "#ffffff",
+    "name": "EasyDH",
+    "short_name": "EZ-DH",
+    "description": "Powerfull encryption app.",
+    "scope": "/EasyDH/",
+    "start_url": "/EasyDH/",
     "background_color": "#ffffff",
-    "display": "fullscreen",
-    "orientation": "portrait",
-    "scope": "/",
-    "start_url": "/",
+    "theme_color": "#ffffff",
+    "display": "standalone", 
     "icons": [
         {
-            "src": "ezdh192.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
-        {
-            "src": "ezdh180.png",
-            "sizes": "180x180",
-            "type": "image/png"
+          "src": "/EasyDH/ezdh192.png",
+          "type": "image/png",
+          "sizes": "192x192"
         }
     ]
-}
+  }
